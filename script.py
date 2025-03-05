@@ -19,19 +19,25 @@ def scrape_data_point():
     Returns:
         str: The headline text if found, otherwise an empty string.
     """
-    req = requests.get("https://www.thedp.com")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+    }
+
+    req = requests.get("https://www.thedp.com", headers=headers)
     loguru.logger.info(f"Request URL: {req.url}")
     loguru.logger.info(f"Request status code: {req.status_code}")
 
     if req.ok:
         soup = bs4.BeautifulSoup(req.text, "html.parser")
-        most_read = soup.find("div", class_="most-read-item")
-        if most_read:
-            target_element = most_read.find("a", class_="frontpage-link standard-link")
+        most_read_section = soup.find("div", class_="most-read-item")
+        if most_read_section:
+            target_element = most_read_section.find("a", class_="frontpage-link standard-link")
             if target_element:
                 data_point = target_element.text.strip()
                 loguru.logger.info(f"Most Read Article: {data_point}")
                 return data_point
+
+    loguru.logger.warning("Could not find Most Read article headline.")
     return ""
 
 if __name__ == "__main__":
