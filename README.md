@@ -136,21 +136,20 @@ But it is important to use it responsibly and ethically. Here are some guideline
 
 10. Continuously re-evaluate your scraping program against applicable laws and ethical principles.
 
-# Scraper Modification
+# Scraper Change: Scraping the Featured Headline
 
-## What I Changed
-## Update: Scraping the Featured Headline
-
-### Overview of Changes
+### Overview
 
 I updated the scraper to extract the top headline from the "Featured" section of *The Daily Pennsylvanian* homepage. Previously, the script targeted a different section of the page. This update enhances the scraper by focusing on a dedicated section that highlights key stories, ensuring that the retrieved headline is a significant and relevant news article.
 
-### Reasoning Behind the Change
+### Reasoning
 
 I decided to scrape the "Featured" section was made to prioritize top editorial selections rather than general headlines. The "Featured" section often contains curated content that is more relevant and prominent. This approach provides a more consistent and meaningful headline for tracking.
 
-### Implementation Details
+### Implementation
 
-Now the script identifies the "Featured" section by searching for an `<h3>` tag with the class `"frontpage-section"`, ensuring that the extracted headline is always from this highlighted area. The scraper then finds the first article link within this section and extracts its text. Error handling has been improved by adding request timeouts and logging mechanisms to track any failures.
+Now the script identifies the "Featured" section by searching for an `<h3>` tag with the class `"frontpage-section"`, ensuring that the extracted headline is always from this highlighted area. The scraper then finds the first article link within this section and extracts its text. I also updated error handling by adding request timeouts and logging mechanisms to track any failures! This improves the scraper’s reliability and ensures that the collected data is more aligned with key stories highlighted by *The Daily Pennsylvanian*!
 
-This modification enhances the scraper’s reliability and ensures that the collected data is more aligned with key stories highlighted by *The Daily Pennsylvanian*!
+# Cron Schedule Explanation
+
+I updated the cron schedule so the scraper now runs twice a day instead of just once. The new schedule has two cron expressions: `0 8 * * *` and `0 20 * * *`. The first one runs the scraper every day at 8:00 AM UTC, and the second one runs it again at 8:00 PM UTC. The `* * *` means it runs every day, no matter the date, month, or day of the week. This way, I’m getting more frequent updates and making sure the scraper catches any changes throughout the day.
