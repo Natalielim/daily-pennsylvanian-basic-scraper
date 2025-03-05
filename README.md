@@ -135,3 +135,17 @@ But it is important to use it responsibly and ethically. Here are some guideline
 9. Document your scraping process thoroughly for replicability, transparency and accountability.
 
 10. Continuously re-evaluate your scraping program against applicable laws and ethical principles.
+
+# Scraper Modification
+
+## What I Changed
+- Updated scraper to fetch the **Most Read** article instead of the homepage headline.
+
+## How I Did It
+- Inspected the website’s HTML to find the CSS class for the Most Read section.
+- Modified `script.py` to extract the first **Most Read** article.
+- Tested locally to confirm it works.
+
+## Next Steps
+- Monitor for HTML structure changes.
+- Expand to scrape multiple "Most Read" headlines.
