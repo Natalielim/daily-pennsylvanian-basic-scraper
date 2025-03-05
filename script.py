@@ -1,30 +1,26 @@
 """
-Scrapes a headline from The Daily Pennsylvanian website and saves it to a 
-JSON file that tracks headlines over time.
+Scrapes the top "Featured" headline from The Daily Pennsylvanian website
+and saves it to a JSON file that tracks headlines over time.
 """
 
 import os
 import sys
-import json
 import bs4
 import requests
 import loguru
 import daily_event_monitor
 
-def scrape_most_read_article():
+def scrape_featured_headline():
     """
-    Scrapes the most read article headline by making two HTTP requests:
-    1. Fetches the homepage and extracts the most-read article URL.
-    2. Fetches the article page and extracts its headline.
+    Scrapes the top headline from the 'Featured' section of The Daily Pennsylvanian homepage.
 
     Returns:
-        str: The article headline if found, otherwise an empty string.
+        str: The headline text if found, otherwise an empty string.
     """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
     }
 
-    # Step 1: Fetch the homepage
     homepage_url = "https://www.thedp.com"
     loguru.logger.info(f"Requesting homepage: {homepage_url}")
     
@@ -37,41 +33,17 @@ def scrape_most_read_article():
 
     soup = bs4.BeautifulSoup(response.text, "html.parser")
 
-    # Find Most Read section
-    most_read_section = soup.find("span", id="mostRead")
-    if not most_read_section:
-        loguru.logger.warning("Could not find 'Most Read' section.")
-        return ""
+    # Find the "Featured" section
+    featured_section = soup.find("h3", class_="frontpage-section")
+    if featured_section and "Featured" in featured_section.text:
+        featured_article = featured_section.find_next("a", class_="frontpage-link standard-link")
+        if featured_article:
+            headline = featured_article.text.strip()
+            loguru.logger.info(f"Featured Headline: {headline}")
+            return headline
 
-    # Extract first article link
-    first_article = most_read_section.find("a", class_="frontpage-link standard-link")
-    if not first_article or not first_article.get("href"):
-        loguru.logger.warning("Could not find 'Most Read' article link.")
-        return ""
-
-    article_url = homepage_url + first_article["href"]
-    loguru.logger.info(f"Most Read Article URL: {article_url}")
-
-    # Step 2: Fetch the article page
-    try:
-        article_response = requests.get(article_url, headers=headers, timeout=10)
-        article_response.raise_for_status()
-    except requests.RequestException as e:
-        loguru.logger.error(f"Error fetching article page: {e}")
-        return ""
-
-    article_soup = bs4.BeautifulSoup(article_response.text, "html.parser")
-
-    # Extract article headline (usually <h1>)
-    headline = article_soup.find("h1")
-    if not headline:
-        loguru.logger.warning("Could not find article headline.")
-        return ""
-
-    headline_text = headline.text.strip()
-    loguru.logger.info(f"Extracted Headline: {headline_text}")
-
-    return headline_text
+    loguru.logger.warning("Could not find 'Featured' article headline.")
+    return ""
 
 
 if __name__ == "__main__":
@@ -96,7 +68,7 @@ if __name__ == "__main__":
     # Run scrape
     loguru.logger.info("Starting scrape")
     try:
-        data_point = scrape_most_read_article()
+        data_point = scrape_featured_headline()
     except Exception as e:
         loguru.logger.error(f"Failed to scrape data point: {e}")
         data_point = None
