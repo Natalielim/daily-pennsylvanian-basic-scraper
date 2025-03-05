@@ -29,13 +29,17 @@ def scrape_data_point():
 
     if req.ok:
         soup = bs4.BeautifulSoup(req.text, "html.parser")
-        most_read_section = soup.find("div", class_="most-read-item")
+
+        # Find the "Most Read" section
+        most_read_section = soup.find("span", id="mostRead")
         if most_read_section:
-            target_element = most_read_section.find("a", class_="frontpage-link standard-link")
-            if target_element:
-                data_point = target_element.text.strip()
-                loguru.logger.info(f"Most Read Article: {data_point}")
-                return data_point
+            first_article = most_read_section.find("div", class_="most-read-item")
+            if first_article:
+                target_element = first_article.find("a", class_="frontpage-link standard-link")
+                if target_element:
+                    data_point = target_element.text.strip()
+                    loguru.logger.info(f"Most Read Article: {data_point}")
+                    return data_point
 
     loguru.logger.warning("Could not find Most Read article headline.")
     return ""
