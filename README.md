@@ -139,13 +139,18 @@ But it is important to use it responsibly and ethically. Here are some guideline
 # Scraper Modification
 
 ## What I Changed
-- Updated scraper to fetch the **Most Read** article instead of the homepage headline.
+## Update: Scraping the Featured Headline
 
-## How I Did It
-- Inspected the website’s HTML to find the CSS class for the Most Read section.
-- Modified `script.py` to extract the first **Most Read** article.
-- Tested locally to confirm it works.
+### Overview of Changes
 
-## Next Steps
-- Monitor for HTML structure changes.
-- Expand to scrape multiple "Most Read" headlines.
+I updated the scraper to extract the top headline from the "Featured" section of *The Daily Pennsylvanian* homepage. Previously, the script targeted a different section of the page. This update enhances the scraper by focusing on a dedicated section that highlights key stories, ensuring that the retrieved headline is a significant and relevant news article.
+
+### Reasoning Behind the Change
+
+I decided to scrape the "Featured" section was made to prioritize top editorial selections rather than general headlines. The "Featured" section often contains curated content that is more relevant and prominent. This approach provides a more consistent and meaningful headline for tracking.
+
+### Implementation Details
+
+Now the script identifies the "Featured" section by searching for an `<h3>` tag with the class `"frontpage-section"`, ensuring that the extracted headline is always from this highlighted area. The scraper then finds the first article link within this section and extracts its text. Error handling has been improved by adding request timeouts and logging mechanisms to track any failures.
+
+This modification enhances the scraper’s reliability and ensures that the collected data is more aligned with key stories highlighted by *The Daily Pennsylvanian*!
